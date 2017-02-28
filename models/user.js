@@ -9,7 +9,7 @@ const Schema = mongoose.Schema;
  //Define a user schema
 const userSchema = new Schema({
   firstName: {
-    type: [String, 'First name is not a String'], // Type validation
+    type: String, // Type validation
     required: true,
     minlength: [ 2, 'First name is too short' ], // Minimum length
     maxlength: [20,'First name is too long' ]// Maximum length
