@@ -10,7 +10,7 @@ const issueSchema = new Schema({
     type: String,
     required: true,
     enum: [ 'new', 'inProgress', 'canceled', 'completed' ],
-    default: "new",
+    default: "new"
   },
   description: {
     type: String,
@@ -18,23 +18,23 @@ const issueSchema = new Schema({
   },
   imageUrl: {
     type: String,
-    maxlength: 500,
+    maxlength: 500
   },
   latitude: {
     type: Number,
     required: true,
     min: 0,
-    max: 90,
+    max: 90
   },
   longitude: {
     type: Number,
     required: true,
     min: -180,
-    max: 180,
+    max: 180
   },
   tags: {
     type: [String],
-    required: true,
+    required: true
   },
   createdAt: {
     type: Date,
@@ -47,7 +47,7 @@ const issueSchema = new Schema({
   user: {
     type: Schema.Types.UserId,
     ref: 'User',
-    default: null,
+    default: null
   }
 });
 
