@@ -40,7 +40,7 @@ const issueSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  updateddAt: {
+  updatedAt: {
     type: Date,
     default: Date.now
   },
