@@ -5,18 +5,20 @@ const Schema = mongoose.Schema;
 /**
  * A user.
  */
+
+ //Define a user schema
 const userSchema = new Schema({
   firstName: {
-    type: String, // Type validation
-    required: true, // Mandatory
+    type: [String, 'First name is not a String'], // Type validation
+    required: true,
     minlength: [ 2, 'First name is too short' ], // Minimum length
-    maxlength: 20 // Maximum length
+    maxlength: [20,'First name is too long' ]// Maximum length
   },
   lastName: {
     type: String, // Type validation
     required: true, // Mandatory
-    minlength: [ 2, 'Last name is too short' ], // Minimum length
-    maxlength: 20 // Maximum length
+    minlength: [ 2, 'Last name is too short'], // Minimum length
+    maxlength: [20,'Last name is too long'] // Maximum length
   },
   role: {
     type: String, // Type validation
@@ -26,7 +28,10 @@ const userSchema = new Schema({
   },
   createdAt: {
     type: Date,
-    required: true, // Mandatory
     default: Date.now},
 });
 userSchema.index({ firstName: 1, lastName: 1  }, { unique: true });
+
+
+//Create the model from the schema and export it
+module.exports = mongoose.model('User', userSchema);
