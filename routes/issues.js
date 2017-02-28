@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const Issue = require('../models/issue');
-const ObjectId = mongoose.Types.ObjectId;
+//const ObjectId = mongoose.Types.ObjectId;
 
  /* GET issues listing. */
  router.get('/', function(req, res, next) {
    //Find all issues in the db and sort it by status
-   User.find().sort('status').exec(function(err, issues) {
+   Issue.find().sort('status').exec(function(err, issues) {
      if (err) {
        return next(err);
      }
@@ -16,9 +16,9 @@ const ObjectId = mongoose.Types.ObjectId;
 
  /* POST new issue */
  router.post('/', function(req, res, next) {
-   const newUser = new User(req.body);
+   const newIssue = new Issue(req.body);
    // Save issue
-   newUser.save(function(err, savedIssue) {
+   newIssue.save(function(err, savedIssue) {
      if (err) {
        return next(err);
      }
