@@ -47,31 +47,14 @@ const _ = require('lodash');
  /* PATCH an issue */
  router.patch('/:id', loadIssueFromParamsMiddleware, function(req, res, next) {
 
-  // Update a property or several
-
-  // Update status
-  if (  req.issue.status !== undefined) {
-        req.issue.status = req.body.status;
-    };
-
-  _.assignIn(req.issue, req.body);
-
-
-  req.issue.status = req.body.status;
-  req.issue.description = req.body.description;
-  req.issue.imageUrl = req.body.imageUrl;
-  req.issue.latitude = req.body.latitude;
-  req.issue.longitude = req.body.longitude;
-  req.issue.tags = req.body.tags;
-  req.issue.user = req.body.user;
-  req.issue.updatedAt = Date.now;
+   // Update a property or several
+  const whitelist = _.pick(req.body, ['status', 'description', 'imageUrl', 'latitude', 'longitude', 'updatedAt']); //create a whistelist of properties to be changed
+  _.assignIn(req.issue, whitelist);
 
   req.issue.save(function(err, savedIssue) {
     if (err) {
       return next(err);
     }
-
-    debug(`Updated issue "${savedIssue.description}"`);
     res.send(savedIssue);
   });
 });

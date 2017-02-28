@@ -55,6 +55,12 @@ const issueSchema = new Schema({
   }
 });
 
+//update date before a PATCH
+issueSchema.pre('save', function(next) {
+  this.updatedAt = new Date();
+  next();
+});
+
 //validate if user exist
 function validateUser(value, callback) {
   mongoose.model('User').findOne({ _id: ObjectId(value) }).exec(function(err, user) {
