@@ -33,13 +33,54 @@ router.post('/', function(req, res, next) {
 
 /* GET one user */
 router.get('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
-  countMoviesDirectedBy([ req.user ], function(err, results) {
+    res.send(req.user);
+});
+
+/* PUT Update a user */
+router.put('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
+
+  // Update all properties (regardless of whether they are in the request body or not)
+  req.user.firstName = req.body.firstName;
+  req.user.lastName = req.body.lastName;
+  req.user.role = req.body.role;
+
+  req.user.save(function(err, savedUser) {
     if (err) {
       return next(err);
     }
 
-    res.send(req.person);
-  })
+    res.send(savedUser);
+  });
+});
+
+/* PATCH Update a user */
+router.patch('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
+
+  // Update all properties (regardless of whether they are in the request body or not)
+  if(req.body.first !== undefined){
+    req.user.firstName = req.body.firstName;
+  }
+
+  req.user.lastName = req.body.lastName;
+  req.user.role = req.body.role;
+
+  req.user.save(function(err, savedUser) {
+    if (err) {
+      return next(err);
+    }
+
+    res.send(savedUser);
+  });
+});
+
+/* DELETE one user */
+router.delete('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
+    req.user.remove(function(err) {
+      if (err) {
+        return next(err);
+      }
+      res.sendStatus(204);
+    });
 });
 
 
