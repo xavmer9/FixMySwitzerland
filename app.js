@@ -1,4 +1,7 @@
 var express = require('express');
+const mongoose = require('mongoose');
+mongoose.Promise = Promise;
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/my-db-name');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
