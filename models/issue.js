@@ -5,39 +5,49 @@ const Schema = mongoose.Schema;
 /**
  * An issue declared by a user.
  */
-const userSchema = new Schema({
+const issueSchema = new Schema({
   status: {
     type: String,
     required: true,
-    enum: [ 'new', 'inProgress', 'canceled', 'completed'],
-    minlength: 3,
-    maxlength: 50,
-    unique: true,
-    validate: {
-      // Manually validate uniqueness to send a "pretty" validation error
-      // rather than a MongoDB duplicate key error
-      validator: validateMovieTitleUniqueness,
-      message: 'Movie {VALUE} already exists'
-    }
+    enum: [ 'new', 'inProgress', 'canceled', 'completed' ],
+    default: "new",
   },
-  rating: {
+  description: {
+    type: String,
+    maxlength: 1000 // Maximum length
+  },
+  imageUrl: {
+    type: String,
+    maxlength: 500,
+  },
+  latitude: {
     type: Number,
+    required: true,
     min: 0,
-    max: 10
+    max: 90,
+  },
+  longitude: {
+    type: Number,
+    required: true,
+    min: -180,
+    max: 180,
+  },
+  tags: {
+    type: [String],
+    required: true,
   },
   createdAt: {
     type: Date,
     default: Date.now
   },
-  director: {
-    type: Schema.Types.ObjectId,
-    ref: 'Person',
+  updateddAt: {
+    type: Date,
+    default: Date.now
+  },
+  user: {
+    type: Schema.Types.UserId,
+    ref: 'User',
     default: null,
-    validate: {
-      // Validate that the director is a valid ObjectId
-      // and references an existing person
-      validator: validateDirector
-    }
   }
 });
 
@@ -141,4 +151,4 @@ function transformJsonMovie(doc, json, options) {
   return json;
 }
 
-module.exports = mongoose.model('Movie', movieSchema);
+module.exports = mongoose.model('Issue', issueSchema);
