@@ -16,13 +16,13 @@ const userSchema = new Schema({
   },
   lastName: {
     type: String, // Type validation
-    required: true, // Mandatory
+    required: true,
     minlength: [ 2, 'Last name is too short'], // Minimum length
     maxlength: [20,'Last name is too long'] // Maximum length
   },
   role: {
     type: String, // Type validation
-    required: true, // Mandatory
+    required: true,
     enum: ["citizen","manager"],
 
   },
