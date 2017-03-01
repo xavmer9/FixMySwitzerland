@@ -47,8 +47,8 @@ const _ = require('lodash');
  /* PATCH an issue */
  router.patch('/:id', loadIssueFromParamsMiddleware, function(req, res, next) {
 
-   // Update a property or several
-  const whitelist = _.pick(req.body, ['status', 'description', 'imageUrl', 'latitude', 'longitude', 'updatedAt']); //create a whistelist of properties to be changed
+// Update a property or several
+  const whitelist = _.pick(req.body, ['status', 'description', 'imageUrl', 'latitude', 'longitude', 'updatedAt']); //create a whitelist of properties to be changed
   _.assignIn(req.issue, whitelist);
 
   req.issue.save(function(err, savedIssue) {
