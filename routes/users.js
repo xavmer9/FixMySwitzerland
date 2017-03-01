@@ -48,6 +48,32 @@ router.get('/:id/issues', loadUserFromParamsMiddleware, function(req, res, next)
   });
 });
 
+/* PATCH Update a user */
+router.patch('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
+
+  // Update a property or several
+  const whitelist = _.pick(req.body, ['firstName', 'lastName', 'role']); //create a whitelist of properties to be changed
+  _.assignIn(req.user, whitelist);
+
+  req.user.save(function(err, savedUser) {
+    if (err) {
+      return next(err);
+    }
+
+    res.send(savedUser);
+  });
+});
+
+/* DELETE one user */
+router.delete('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
+  req.user.remove(function(err) {
+    if (err) {
+      return next(err);
+    }
+    res.sendStatus(204);
+  });
+});
+
 /**
  * Middleware that loads the person corresponding to the ID in the URL path.
  * Responds with 404 Not Found if the ID is not valid or the person doesn't exist.
