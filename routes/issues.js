@@ -4,17 +4,121 @@ const Issue = require('../models/issue');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const _ = require('lodash');
+const formatLinkHeader = require('format-link-header');
 
- /* GET issues listing. */
- router.get('/', function(req, res, next) {
-   //Find all issues in the db and sort it by status
+ /* router.get('/', function(req, res, next) {
+
+   //Find all issues in the db and sort it by status, paginate
    Issue.find().sort('status').exec(function(err, issues) {
      if (err) {
        return next(err);
      }
+
+     //get the parameters
+     var query = req.query;
+
      res.send(issues);
    });
  });
+  */
+
+  router.get('/', function(req, res, next) {
+
+  // Count total movies matching the URL query parameters
+  const countQuery = queryIssues(req);
+  countQuery.count(function(err, total) {
+    if (err) {
+      return next(err);
+    }
+
+    // Prepare the initial database query from the URL query parameters
+    let query = queryIssues(req);
+
+    // Paginate
+    query = paginate('/issues', query, total, req, res);
+
+    // Execute the query
+    query.sort({ title: 1 }).exec(function(err, issues) {
+      if (err) {
+        return next(err);
+      }
+
+      res.send(issues);
+    });
+  });
+});
+
+ /**
+  * Returns a Mongoose query that will retrieve issues filtered with the URL query parameters.
+  */
+ function queryIssues(req) {
+
+  let query = Issue.find();
+
+  if (Array.isArray(req.query.user)) {
+    const users = req.query.user.filter(ObjectId.isValid);
+    query = query.where('user').in(users);
+  } else if (ObjectId.isValid(req.query.user)) {
+    query = query.where('user').equals(req.query.user);
+  }
+
+  if (!isNaN(req.query.status)) {
+    query = query.where('status').equals(req.query.status);
+  }
+  return query;
+}
+
+/**
+ * Paginates a database query and adds a Link header to the response (if applicable).
+ *
+ * @param {String} resourceHref - The hyperlink reference of the collection (e.g. "/api/people")
+ * @param {MongooseQuery} query - The database query to paginate
+ * @param {Number} total - The total number of elements in the collection
+ * @param {ExpressRequest} req - The Express request object
+ * @param {ExpressResponse} res - The Express response object
+ * @returns The paginated query
+ */
+function paginate(resourceHref, query, total, req, res) {
+
+  // Parse the "page" URL query parameter indicating the index of the first element that should be in the response
+  let page = parseInt(req.query.page, 10);
+  if (isNaN(page) || page < 1) {
+    page = 1;
+  }
+
+  // Parse the "pageSize" URL query parameter indicating how many elements should be in the response
+  let pageSize = parseInt(req.query.pageSize, 10);
+  if (isNaN(pageSize) || pageSize < 0 || pageSize > 100) {
+    pageSize = 100;
+  }
+
+  // Apply the pagination to the database query
+  query = query.skip((page - 1) * pageSize).limit(pageSize);
+
+  const links = {};
+  const url = config.baseUrl + resourceHref;
+  const maxPage = Math.ceil(total / pageSize);
+
+  // Add first & prev links if current page is not the first one
+  if (page > 1) {
+    links.first = { rel: 'first', url: `${url}?page=1&pageSize=${pageSize}` };
+    links.prev = { rel: 'prev', url: `${url}?page=${page - 1}&pageSize=${pageSize}` };
+  }
+
+  // Add next & last links if current page is not the last one
+  if (page < maxPage) {
+    links.next = { rel: 'next', url: `${url}?page=${page + 1}&pageSize=${pageSize}` };
+    links.last = { rel: 'last', url: `${url}?page=${maxPage}&pageSize=${pageSize}` };
+  }
+
+  // If there are any links (i.e. if there is more than one page),
+  // add the Link header to the response
+  if (Object.keys(links).length >= 1) {
+    res.set('Link', formatLinkHeader(links));
+  }
+
+  return query;
+};
 
  /* GET an issue */
  router.get('/:id', loadIssueFromParamsMiddleware, function(req, res, next) {
