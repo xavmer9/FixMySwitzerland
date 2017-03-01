@@ -6,23 +6,9 @@ const ObjectId = mongoose.Types.ObjectId;
 const _ = require('lodash');
 const formatLinkHeader = require('format-link-header');
 
- /* router.get('/', function(req, res, next) {
 
-   //Find all issues in the db and sort it by status, paginate
-   Issue.find().sort('status').exec(function(err, issues) {
-     if (err) {
-       return next(err);
-     }
 
-     //get the parameters
-     var query = req.query;
-
-     res.send(issues);
-   });
- });
-  */
-
-  router.get('/', function(req, res, next) {
+router.get('/', function(req, res, next) {
 
   // Count total movies matching the URL query parameters
   const countQuery = queryIssues(req);
@@ -96,7 +82,8 @@ function paginate(resourceHref, query, total, req, res) {
   query = query.skip((page - 1) * pageSize).limit(pageSize);
 
   const links = {};
-  const url = config.baseUrl + resourceHref;
+  const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || '3000'}`;
+  const url = baseUrl + resourceHref;
   const maxPage = Math.ceil(total / pageSize);
 
   // Add first & prev links if current page is not the first one

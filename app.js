@@ -48,10 +48,10 @@ app.use(function(err, req, res, next) {
   // render the error page
   if (err.name == 'ValidationError') {
       res.status(err.status || 422);
-      res.render('error');
+      res.send('error');
     } else {
       res.status(err.status || 500);
-      res.render('error');
+      res.send(err.message);
     }
 
 });
