@@ -58,7 +58,7 @@ router.put('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
 router.patch('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
 
   // Update a property or several
-  const whitelist = _.pick(req.body, ['firstName', 'lastName', 'role']); //create a whistelist of properties to be changed
+  const whitelist = _.pick(req.body, ['firstName', 'lastName', 'role']); //create a whitelist of properties to be changed
   _.assignIn(req.user, whitelist);
 
   req.user.save(function(err, savedUser) {
