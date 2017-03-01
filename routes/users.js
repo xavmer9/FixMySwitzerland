@@ -4,15 +4,56 @@ const User = require('../models/user');
 const Issue = require('../models/issue');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
+const _ = require('lodash');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  //Find all the users in the db and sort it by name
-  User.find().sort('name').exec(function(err, users) {
+  //Find all the users in the db and sort it by lastName
+  User.find().sort('lastName').exec(function(err, users) {
     if (err) {
       return next(err);
     }
-    res.send(users);
+
+    // Get the documents' IDs
+    const userIds = users.map(user => user._id);
+
+
+    //Aggregation to count issues of each users
+    Issue.aggregate([
+      {
+        $match: { // Select issues reported by the people we are interested in
+          user: { $in: userIds }
+        }
+      },
+      {
+        $group: { // Group the documents by user ID
+          _id: '$user',
+          issueCount: { // Count the number of issues for that ID
+            $sum: 1
+          }
+        }
+      }
+    ], function(err, results) {
+      if (err) {
+        return next(err);
+      }
+        // Convert the Person documents to JSON
+        const userJson = users.map(user => user.toJSON());
+
+        // For each result...
+        results.forEach(function(result) {
+          // Get the user ID (that was used to $group)...
+          const resultId = result._id.toString();
+          // Find the corresponding person...
+          const correspondingUser = userJson.find(user => user._id == resultId);
+          // And attach the new property
+          correspondingUser.reportedIssueCount = result.issueCount;
+
+        });
+        // Send the enriched response
+        res.send(userJson);
+    });
+    //res.send(users);
   });
 });
 
