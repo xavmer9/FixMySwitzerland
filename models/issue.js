@@ -47,6 +47,7 @@ const issueSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
     default: null,
     validate: {
      // Validate that the user is a valid ObjectId (exsit)
