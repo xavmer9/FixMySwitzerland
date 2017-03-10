@@ -3,7 +3,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;
 
 /**
- * A user.
+ * A user    .
  */
 
  //Define a user schema
