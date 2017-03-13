@@ -7,7 +7,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const _ = require('lodash');
 
 /**
- * @api {get} /users List users
+ * @api {get} users List users
  * @apiName RetrieveUsers
  * @apiGroup User
  * @apiVersion 1.0.0
@@ -84,7 +84,7 @@ router.get('/', function(req, res, next) {
 
 
 /**
-* @api {post} /users Create a user
+* @api {post} users Create a user
 * @apiName CreateUser
 * @apiGroup User
 * @apiVersion 1.0.0
@@ -130,7 +130,7 @@ router.post('/', function(req, res, next) {
 });
 
 /**
- * @api {get} /users/:id Retrieve a user
+ * @api {get} users/:id Retrieve a user
  * @apiName RetrieveUser
  * @apiGroup User
  * @apiVersion 1.0.0
@@ -159,7 +159,7 @@ router.get('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
 });
 
 /**
- * @api {get} /users/:id/issues Retrieve all issues of a user
+ * @api {get} users/:id/issues Retrieve all issues of a user
  * @apiName RetrieveIssuesFromAUser
  * @apiGroup User
  * @apiVersion 1.0.0
@@ -205,7 +205,7 @@ router.get('/:id/issues', loadUserFromParamsMiddleware, function(req, res, next)
 });
 
 /**
- * @api {patch} /users/:id Update an existing user
+ * @api {patch} users/:id Update an existing user
  * @apiName UpdateUser
  * @apiGroup User
  * @apiVersion 1.0.0
@@ -245,7 +245,7 @@ router.patch('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
 });
 
 /**
- * @api {delete} /users/:id Delete a user
+ * @api {delete} users/:id Delete a user
  * @apiName DeleteUser
  * @apiGroup User
  * @apiVersion 1.0.0
