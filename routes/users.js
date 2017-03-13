@@ -79,7 +79,6 @@ router.get('/', function(req, res, next) {
         // Send the enriched response
         res.send(userJson);
     });
-    //res.send(users);
   });
 });
 
@@ -106,16 +105,16 @@ router.get('/', function(req, res, next) {
 * @apiSuccessExample 201 Created
 *     HTTP/1.1 201 Created
 *     Content-Type: application/json
-*     Location: https://heigvd-webserv-2017-team-7.herokuapp.com/users/
+*     Location: https://heigvd-webserv-2017-team-1.herokuapp.com/users/
 *
-{
-  "__v": 0,
-  "firstName": "Shadia",
-  "lastName": "Hugg",
-  "role": "citizen",
-  "_id": "58b6ea79267d13001103d78e",
-  "createdAt": "2017-03-01T15:36:25.306Z"
-}
+*   {
+*     "__v": 0,
+*     "firstName": "Shadia",
+*     "lastName": "Hugg",
+*     "role": "citizen",
+*     "_id": "58b6ea79267d13001103d78e",
+*     "createdAt": "2017-03-01T15:36:25.306Z"
+*   }
 */
 router.post('/', function(req, res, next) {
   // Create a new document from the JSON in the request body
@@ -139,26 +138,62 @@ router.post('/', function(req, res, next) {
  *
  *
  * @apiExample Example
- *     GET /users/58b588145f392e0d34e16b44 HTTP/1.1
+ *     GET /users/58b6ea79267d13001103d78e HTTP/1.1
  *
  * @apiSuccessExample 200 OK
  *     HTTP/1.1 200 OK
  *     Content-Type: application/json
+ *     Location: https://heigvd-webserv-2017-team-1.herokuapp.com/users/58b6ea79267d13001103d78e
  *
  *     {
- *        "firstName": "Adrien",
- *        "lastName": "Savoretti",
- *        "role": "manager",
- *        "createdAt": "2017-02-28T14:24:20.482Z",
- *        "id": "58b588145f392e0d34e16b44"
+ *        "_id": "58b6ea79267d13001103d78e",
+ *        "firstName": "Shadia",
+ *        "lastName": "Hugg",
+ *        "role": "citizen",
+ *        "__v": 0,
+ *        "createdAt": "2017-03-01T15:36:25.306Z"
  *      }
  */
-/* GET one user */
 router.get('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
     res.send(req.user);
 });
 
-/* GET all issues from a user */
+/**
+ * @api {get} /users/:id/issues Retrieve all issues of a user
+ * @apiName RetrieveIssuesFromAUser
+ * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Retrieves all issues of one user.
+ *
+ *
+ * @apiExample Example
+ *     GET /users/58b6ea79267d13001103d78e/issues HTTP/1.1
+ *
+ * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
+ *     Content-Type: application/json
+ *     Location: https://heigvd-webserv-2017-team-1.herokuapp.com/users/58b6ea79267d13001103d78e/issues
+ *
+ *  [
+ *    {
+ *      "_id": "58b6e5f7267d13001103d78c",
+ *      "description": "a psychedelic graffiti",
+ *      "imageUrl": "graff_wopla.png",
+ *      "latitude": 38,
+ *      "longitude": 122,
+ *      "__v": 0,
+ *      "user": "58b6e58e267d13001103d78b",
+ *      "updatedAt": "2017-03-13T07:34:23.024Z",
+ *      "createdAt": "2017-03-01T15:17:11.632Z",
+ *      "tags": [
+ *        "psychedelic",
+ *        "graff",
+ *        "zurich"
+ *      ],
+ *      "status": "inProgress"
+ *    }
+ *  ]
+ */
 router.get('/:id/issues', loadUserFromParamsMiddleware, function(req, res, next) {
   Issue.find().sort('updatedAt').exec(function(err, issues) {
     if (err) {
@@ -169,7 +204,31 @@ router.get('/:id/issues', loadUserFromParamsMiddleware, function(req, res, next)
   });
 });
 
-/* PATCH Update a user */
+/**
+ * @api {patch} /users/:id Update an existing user
+ * @apiName UpdateUser
+ * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Update one or multiples parameters of an existing user
+ *
+ *
+ * @apiExample Example
+ *     GET /users/58b6ea79267d13001103d78e HTTP/1.1
+ *
+ * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
+ *     Content-Type: application/json
+ *     Location: https://heigvd-webserv-2017-team-1.herokuapp.com/users/58b6ea79267d13001103d78e
+ *
+ * {
+ *  "_id": "58b6ea79267d13001103d78e",
+ *  "firstName": "Shadia",
+ *  "lastName": "Huggenberger",
+ *  "role": "citizen",
+ *  "__v": 0,
+ *  "createdAt": "2017-03-01T15:36:25.306Z"
+ * }
+ */
 router.patch('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
 
   // Update a property or several
@@ -185,7 +244,23 @@ router.patch('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
   });
 });
 
-/* DELETE one user */
+/**
+ * @api {delete} /users/:id Delete a user
+ * @apiName DeleteUser
+ * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Delete a user
+ *
+ *
+ * @apiExample Example
+ *     GET /users/58b6ea79267d13001103d78e HTTP/1.1
+ *
+ * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
+ *     Content-Type: application/json
+ *     Location: https://heigvd-webserv-2017-team-1.herokuapp.com/users/58b6ea79267d13001103d78e
+ *
+ */
 router.delete('/:id', loadUserFromParamsMiddleware, function(req, res, next) {
   req.user.remove(function(err) {
     if (err) {
